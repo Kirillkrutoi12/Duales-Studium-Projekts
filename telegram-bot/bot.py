@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler
+from data import AUSBILDUNG_DATA, DUALES_STUDIUM_DATA
 
 load_dotenv()  # загружает переменные из .env(downloads variables from .env)
 TOKEN = os.getenv('TOKEN')  # Getting a Token
@@ -47,6 +48,35 @@ async def handle_program_choice(update: Update, context):
     await query.edit_message_text('Wähl deine Stadt:', reply_markup=reply_markup)
 
 
+async def handle_city_choice(update: Update, context):
+    """Showing jobopenings in the selected city"""
+    query = update.callback_query
+    await query.answer()
+    # Getting the city
+    city = query.data.replace('city_', '')  # "city_stuttgart" → "stuttgart"
+    city = city.capitalize()  # "stuttgart" → "Stuttgart"
+    """Getting a type of programm from data"""
+    program_type = context.user_data.get('program_type', 'program_ausbildung')
+    """Choosing the right database"""
+    if program_type == 'program_ausbildung':
+        data = AUSBILDUNG_DATA.get(city, [])
+    else:
+        data = DUALES_STUDIUM_DATA.get(city, [])
+    # Forming a response
+    if not data:
+        await query.edit_message_text(f"Leider in der {city} gibt es nun keine Stellen")
+        return
+    # Forming message with list of jobopenings
+    message = f"Verfügbare Programme in {city}:\n\n"
+
+    for i, job in enumerate(data, 1):
+        message += f"{i}. {job['title']}\n"
+        message += f"   🏢 {job['company']}\n"
+        message += f"   🔗 {job['url']}\n\n"
+
+    await query.edit_message_text(message)
+
+
 def main():
     """Main function starts and sets bot"""
     app = Application.builder().token(TOKEN).build()
@@ -55,8 +85,10 @@ def main():
     """Handler button program"""
     app.add_handler(CallbackQueryHandler(
         handle_program_choice,
+        # срабатывает на callback_data начинающиеся с "program_"(# triggers on callback_data starting with "program_")
         pattern="^program_"
     ))
+    app.add_handler(CallbackQueryHandler(handle_city_choice, pattern="^city_"))
     print('Bot gestartet!')
     """Start listening a Bot"""
     app.run_polling()
