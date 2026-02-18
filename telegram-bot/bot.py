@@ -65,8 +65,12 @@ async def handle_city_choice(update: Update, context):
     else:
         data = DUALES_STUDIUM_DATA.get(city, [])
     # Forming a response
+    keyboard = [[
+        InlineKeyboardButton('🔙 Zurück', callback_data='back_to_cities')
+    ]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
     if not data:
-        await query.edit_message_text(f"Leider in der {city} gibt es nun keine Stellen")
+        await query.edit_message_text(f"Leider in der {city} gibt es nun keine Stellen", reply_markup=reply_markup)
         return
     # Forming message with list of jobopenings
     message = f"Verfügbare Programme in {city}:\n\n"
@@ -76,8 +80,7 @@ async def handle_city_choice(update: Update, context):
         message += f"   🏢 {job['company']}\n"
         message += f"   🔗 {job['url']}\n\n"
 
-    await query.edit_message_text(message)
-
+    await query.edit_message_text(message, reply_markup=reply_markup)
 
 async def handle_back(update: Update, context):
     query = update.callback_query
@@ -91,7 +94,18 @@ async def handle_back(update: Update, context):
                 'Duales Studium', callback_data="program_duales")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
-    await query.edit_message_text('Wähl bitte den Programtyp:', reply_markup=reply_markup)
+        await query.edit_message_text('Wähl bitte den Programtyp:', reply_markup=reply_markup)
+    elif query.data == 'back_to_cities':
+        keyboard = [
+            [InlineKeyboardButton(
+                'Stuttgart', callback_data='city_stuttgart')],
+            [InlineKeyboardButton('München', callback_data='city_muenchen')],
+            [InlineKeyboardButton('Berlin', callback_data='city_berlin')],
+            [InlineKeyboardButton(
+                "🔙 Zurück", callback_data="back_to_programs")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text('Wähl deine Stadt:', reply_markup=reply_markup)
 
 
 def main():
