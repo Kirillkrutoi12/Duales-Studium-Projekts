@@ -4,7 +4,7 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler
 from data import AUSBILDUNG_DATA, DUALES_STUDIUM_DATA
 
-load_dotenv()  # загружает переменные из .env(downloads variables from .env)
+load_dotenv()  # downloads variables from .env
 TOKEN = os.getenv('TOKEN')  # Getting a Token
 
 # parametrs update and context contain info about event (Handlers always get these params)
@@ -42,7 +42,8 @@ async def handle_program_choice(update: Update, context):
     keyboard = [
         [InlineKeyboardButton('Stuttgart', callback_data='city_stuttgart')],
         [InlineKeyboardButton('München', callback_data='city_muenchen')],
-        [InlineKeyboardButton('Berlin', callback_data='city_berlin')]
+        [InlineKeyboardButton('Berlin', callback_data='city_berlin')],
+        [InlineKeyboardButton("🔙 Zurück", callback_data="back_to_programs")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await query.edit_message_text('Wähl deine Stadt:', reply_markup=reply_markup)
@@ -50,7 +51,7 @@ async def handle_program_choice(update: Update, context):
 
 async def handle_city_choice(update: Update, context):
     """Showing jobopenings in the selected city"""
-    query = update.callback_query
+    query = update.callback_query  # an object with information about the pressed button
     await query.answer()
     # Getting the city
     city = query.data.replace('city_', '')  # "city_stuttgart" → "stuttgart"
@@ -77,11 +78,26 @@ async def handle_city_choice(update: Update, context):
     await query.edit_message_text(message)
 
 
+async def handle_back(update: Update, context):
+    query = update.callback_query
+    await query.answer()
+    # Determing where to return
+    if query.data == 'back_to_programs':
+        keyboard = [
+            [InlineKeyboardButton(
+                'Ausbildung', callback_data="program_ausbildung")],
+            [InlineKeyboardButton(
+                'Duales Studium', callback_data="program_duales")]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+    await query.edit_message_text('Wähl deine Stadt:', reply_markup=reply_markup)
+
 def main():
     """Main function starts and sets bot"""
     app = Application.builder().token(TOKEN).build()
     """Register a command /start"""
     app.add_handler(CommandHandler('start', start))
+    """Register a command /back"""
     """Handler button program"""
     app.add_handler(CallbackQueryHandler(
         handle_program_choice,
@@ -89,6 +105,7 @@ def main():
         pattern="^program_"
     ))
     app.add_handler(CallbackQueryHandler(handle_city_choice, pattern="^city_"))
+    app.add_handler(CallbackQueryHandler(handle_back, pattern='^back_'))
     print('Bot gestartet!')
     """Start listening a Bot"""
     app.run_polling()
