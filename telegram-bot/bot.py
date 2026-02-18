@@ -15,7 +15,7 @@ TOKEN = os.getenv('TOKEN')  # Getting a Token
 async def start(update: Update, context):
     """Command /start - greet"""
     # Answer on the message
-    await update.message.reply_text('Hallo, ich helfe dir gern dein Ausbildung/Duales Studium zu finden')
+    # await update.message.reply_text('Hallo, ich helfe dir gern dein Ausbildung/Duales Studium zu finden')
     """Create buttons"""
     keyboard = [
         [InlineKeyboardButton(
@@ -26,7 +26,8 @@ async def start(update: Update, context):
 
     reply_markup = InlineKeyboardMarkup(keyboard)
     # Sending a message with buttons
-    await update.message.reply_text("Wähl bitte den Programtyp:", reply_markup=reply_markup)
+    await update.message.reply_text("Hallo, ich helfe dir gern dein Ausbildung/Duales Studium zu finden.\n"
+                                    "Wähl bitte den Programtyp:", reply_markup=reply_markup)
 
 
 async def handle_program_choice(update: Update, context):
@@ -90,14 +91,14 @@ async def handle_back(update: Update, context):
                 'Duales Studium', callback_data="program_duales")]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
-    await query.edit_message_text('Wähl deine Stadt:', reply_markup=reply_markup)
+    await query.edit_message_text('Wähl bitte den Programtyp:', reply_markup=reply_markup)
+
 
 def main():
     """Main function starts and sets bot"""
     app = Application.builder().token(TOKEN).build()
     """Register a command /start"""
     app.add_handler(CommandHandler('start', start))
-    """Register a command /back"""
     """Handler button program"""
     app.add_handler(CallbackQueryHandler(
         handle_program_choice,
