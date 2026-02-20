@@ -30,4 +30,22 @@ def parse_ausbildung(city: str = 'Freiburg', max_result: int = 20) -> List[Dict]
         #Referer-"I came from the main page of ausbildung.de" (doesn't raise suspicion)
         'Referer': 'https://www.ausbildung.de/',
     }
-    
+    try:
+      print(f"We're parsing job openings in {city}...")
+      print(f"URL: {search_url}")
+      #Sending an HTTP request
+      response = requests.get(search_url, headers=headers, timeout=15)
+      #What happens:
+      #1.Python sends an HTTP GET request to 'search_url'
+      #2.Sends 'headers' (pretending to be a browser
+      #3.Waits for a response for up to 15 seconds ('timeout=15')
+      #4.The server returns an HTML page → it is saved in 'response'(in variable)
+      print(f"Status Code: {response.status_code}")
+      #Check if the request was succesfull(status_code -> f.e: 200 means a page has been downloaded without trubles)
+      if response.status_code !=200:
+        print(f"❌ Error: status received {response.status_code}")
+        if response.status_code == 403:
+          print("⚠️ The site may have blocked the request. Please try again later")
+        elif response.status_code == 404:
+          print("⚠️ Page not found. Check the URL")
+        return []
