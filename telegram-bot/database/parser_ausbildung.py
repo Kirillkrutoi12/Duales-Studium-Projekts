@@ -56,33 +56,56 @@ def parse_ausbildung(city: str = 'Freiburg', max_result: int = 20) -> List[Dict]
           response.content - HTML website's code
           'html.parser' - Parcer for HTML
         """
-        #Saving HTML for debugging
+        # Saving HTML for debugging
         debug_filename = f"debug_{city}.html"
         try:
-            with open (debug_filename,'w',encoding='utf-8') as f:
+            with open(debug_filename, 'w', encoding='utf-8') as f:
                 f.write(soup.prettify())
             print(f"💾 HTML saved in {debug_filename}")
         except Exception as e:
             print(f'⚠️ Failed to save debug file:{e}')
-        #Search links for job opennings
+        # Search links for job opennings
         """The code finds all links (<a>) on the page that have the following in their address:/stellen/(second part is filter for href)"""
-        job_links = soup.find_all('a',href=lambda href:href and '/stellen/' in href )
-        #Checking search result
+        job_links = soup.find_all(
+            'a', href=lambda href: href and '/stellen/' in href)
+        # Checking search result
         print(f"📦 Number of links on job openings found:{len(job_links)}")
-        #If there are no job openings (empty list),pop up typs for debug
+        # If there are no job openings (empty list),pop up typs for debug
         if len(job_links) == 0:
-            print('⚠️ No job openings found. Possible reasons:' \
-            '1.False URL for search'\
-            '2.Website changed his struktur'\
-            '3.There are no job opening for {city}'\
-            '4.Check please a file{debug_filename}')
-        #Dublicates avoiding
-        jobs=[]
-        processed_urls=set()
-        #Link processing cycle
+            print('⚠️ No job openings found. Possible reasons:'
+                  '1.False URL for search'
+                  '2.Website changed his struktur'
+                  '3.There are no job opening for {city}'
+                  '4.Check please a file{debug_filename}')
+        # Dublicates avoiding
+        jobs = []
+        processed_urls = set()
+        # Link processing cycle
         for link in job_links:
-            href = link.get('href','')
-            #If a link is already processed -> skip and move on to the next iteration of the loop(Dublicates avoiding)
+            href = link.get('href', '')
+            # If a link is already processed -> skip and move on to the next iteration of the loop(Dublicates avoiding)
             if href in processed_urls:
                 continue
             processed_urls.add(href)
+
+        try:
+            # Search elems inside job openings card
+
+            # Job title(required field)
+            # Search for h3 elem with atributte:data-testid="jp-title"
+            title_elem = link.find('h3', {'data-testid': 'jp-title'})
+            if not title_elem:
+                # Alternative search by class
+                title_elem = link.find(
+                    'h3', class_=lambda c: c and 'jpTitle' in c)
+
+            # If there are no title - skip job opening
+            if not title_elem:
+                continue
+
+            title = title_elem.text.strip()
+            """
+                title_elem -> object BeautifulSoup
+                .text -> extracts text
+                .strip -> removes spaces on the edges
+            """
