@@ -76,4 +76,13 @@ def parse_ausbildung(city: str = 'Freiburg', max_result: int = 20) -> List[Dict]
             '2.Website changed his struktur'\
             '3.There are no job opening for {city}'\
             '4.Check please a file{debug_filename}')
-        
+        #Dublicates avoiding
+        jobs=[]
+        processed_urls=set()
+        #Link processing cycle
+        for link in job_links:
+            href = link.get('href','')
+            #If a link is already processed -> skip and move on to the next iteration of the loop(Dublicates avoiding)
+            if href in processed_urls:
+                continue
+            processed_urls.add(href)
