@@ -64,4 +64,16 @@ def parse_ausbildung(city: str = 'Freiburg', max_result: int = 20) -> List[Dict]
             print(f"💾 HTML saved in {debug_filename}")
         except Exception as e:
             print(f'⚠️ Failed to save debug file:{e}')
+        #Search links for job opennings
+        """The code finds all links (<a>) on the page that have the following in their address:/stellen/(second part is filter for href)"""
+        job_links = soup.find_all('a',href=lambda href:href and '/stellen/' in href )
+        #Checking search result
+        print(f"📦 Number of links on job openings found:{len(job_links)}")
+        #If there are no job openings (empty list),pop up typs for debug
+        if len(job_links) == 0:
+            print('⚠️ No job openings found. Possible reasons:' \
+            '1.False URL for search'\
+            '2.Website changed his struktur'\
+            '3.There are no job opening for {city}'\
+            '4.Check please a file{debug_filename}')
         
