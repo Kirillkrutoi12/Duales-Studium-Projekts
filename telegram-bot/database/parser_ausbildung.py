@@ -56,4 +56,12 @@ def parse_ausbildung(city: str = 'Freiburg', max_result: int = 20) -> List[Dict]
           response.content - HTML website's code
           'html.parser' - Parcer for HTML
         """
+        #Saving HTML for debugging
+        debug_filename = f"debug_{city}.html"
+        try:
+            with open (debug_filename,'w',encoding='utf-8') as f:
+                f.write(soup.prettify())
+            print(f"💾 HTML saved in {debug_filename}")
+        except Exception as e:
+            print(f'⚠️ Failed to save debug file:{e}')
         
