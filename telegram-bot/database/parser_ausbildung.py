@@ -49,4 +49,11 @@ def parse_ausbildung(city: str = 'Freiburg', max_result: int = 20) -> List[Dict]
             elif response.status_code == 404:
                 print("⚠️ Page not found. Check the URL")
             return []
+        # Parcing HTML with BeautifulSoup
+        soup = BeautifulSoup(response.content, 'html.parser')
+        """ 
+        Params:
+          response.content - HTML website's code
+          'html.parser' - Parcer for HTML
+        """
         
