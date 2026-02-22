@@ -109,3 +109,13 @@ def parse_ausbildung(city: str = 'Freiburg', max_result: int = 20) -> List[Dict]
                 .text -> extracts text
                 .strip -> removes spaces on the edges
             """
+            #Company search(optional field)
+            company_elem = link.find('h4',{'data-testid':'jp-customer'})
+            if company_elem:
+                company = company_elem.text.strip()
+                #Remove 'bei' at the begining
+                if company.startswith('bei'):
+                    #Prunning(cut off)
+                    company = company[4:]
+            else:
+                company = 'Keine Angabe'
