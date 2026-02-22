@@ -5,7 +5,7 @@ from typing import List, Dict
 import urllib.parse
 
 
-def parse_ausbildung(city: str = 'Freiburg', max_result: int = 20) -> List[Dict]:
+def parse_ausbildung(city: str = 'Freiburg', max_results: int = 20) -> List[Dict]:
     """
       Parses job listings from Ausbildung.de
 
@@ -161,5 +161,10 @@ def parse_ausbildung(city: str = 'Freiburg', max_result: int = 20) -> List[Dict]
                 'url': full_url
             }
             jobs.append(job)
-            #Pop up the progress
-            print(f'✅ {len(jobs)}. {title[:60]}{'...' if len(title) >60 else ''}-{company}')
+            # Pop up the progress
+            print(f'✅ {len(jobs)}. {title[:60]}{'...' if len(title) > 60 else ''}-{company}')
+            # Limiting the number of results
+            if len(jobs) >= max_results:
+                print(f'⚠️ Reached the limit of {max_results} job openings')
+                break
+            """ What for?: Don't parse more job listings than necessary -> saves time."""
