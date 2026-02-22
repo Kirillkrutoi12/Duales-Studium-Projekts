@@ -109,32 +109,45 @@ def parse_ausbildung(city: str = 'Freiburg', max_result: int = 20) -> List[Dict]
                 .text -> extracts text
                 .strip -> removes spaces on the edges
             """
-            #Company search(optional field)
-            company_elem = link.find('h4',{'data-testid':'jp-customer'})
+            # Company search(optional field)
+            company_elem = link.find('h4', {'data-testid': 'jp-customer'})
             if company_elem:
                 company = company_elem.text.strip()
-                #Remove 'bei' at the begining
+                # Remove 'bei' at the begining
                 if company.startswith('bei'):
-                    #Prunning(cut off)
+                    # Prunning(cut off)
                     company = company[4:]
             else:
                 company = 'Keine Angabe'
-            #City/Location(optinal field)
-            location_elem = link.find('span',{'data-testid':'jp-customer'})
+            # City/Location(optinal field)
+            location_elem = link.find('span', {'data-testid': 'jp-customer'})
             if location_elem:
-                #Extracting text
+                # Extracting text
                 location = location_elem.text.strip()
             else:
-                location=city
-            #Start date (optinal field)
-            start_date_elem = link.find('span', {'data-testid': 'jp-starting-at'})
+                location = city
+            # Start date (optinal field)
+            start_date_elem = link.find(
+                'span', {'data-testid': 'jp-starting-at'})
             if start_date_elem:
                 start_date = start_date_elem.text.strip()
             else:
                 start_date = 'Nicht angegeben'
-            #Number of available seats (optional field)
-            vacancies_elem = link.find('span',{'data-testid':'jp-starting-at'})
+            # Number of available seats (optional field)
+            vacancies_elem = link.find(
+                'span', {'data-testid': 'jp-starting-at'})
             if vacancies_elem:
                 vacancies = vacancies_elem.text.strip()
             else:
                 vacancies = 'Nicht angegeben '
+            # Forming a full link(3 different forms of link)
+            # 1. Absolut link(full)
+            if href.startswith('http'):
+                full_url = href
+            # 2. Relative link (starts with /)
+            elif href.startswith('/'):
+                full_url = f'{base_url}{href}'
+            # 3. Relativ link (without /)
+            else:
+                full_url = f'{base_url}/{href}'
+            """What for ?:Different websites use different link formats. The parser should handle all cases"""
