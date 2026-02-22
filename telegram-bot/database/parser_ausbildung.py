@@ -161,3 +161,5 @@ def parse_ausbildung(city: str = 'Freiburg', max_result: int = 20) -> List[Dict]
                 'url': full_url
             }
             jobs.append(job)
+            #Pop up the progress
+            print(f'✅ {len(jobs)}. {title[:60]}{'...' if len(title) >60 else ''}-{company}')
