@@ -151,3 +151,13 @@ def parse_ausbildung(city: str = 'Freiburg', max_result: int = 20) -> List[Dict]
             else:
                 full_url = f'{base_url}/{href}'
             """What for ?:Different websites use different link formats. The parser should handle all cases"""
+            # Creating dict with job opennings data
+            job = {
+                'title': title,
+                'company': company,
+                'location': location,
+                'start_date': start_date,
+                'vacancies': vacancies,
+                'url': full_url
+            }
+            jobs.append(job)
