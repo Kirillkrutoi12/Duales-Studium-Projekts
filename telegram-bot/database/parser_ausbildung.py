@@ -119,3 +119,22 @@ def parse_ausbildung(city: str = 'Freiburg', max_result: int = 20) -> List[Dict]
                     company = company[4:]
             else:
                 company = 'Keine Angabe'
+            #City/Location(optinal field)
+            location_elem = link.find('span',{'data-testid':'jp-customer'})
+            if location_elem:
+                #Extracting text
+                location = location_elem.text.strip()
+            else:
+                location=city
+            #Start date (optinal field)
+            start_date_elem = link.find('span', {'data-testid': 'jp-starting-at'})
+            if start_date_elem:
+                start_date = start_date_elem.text.strip()
+            else:
+                start_date = 'Nicht angegeben'
+            #Number of available seats (optional field)
+            vacancies_elem = link.find('span',{'data-testid':'jp-starting-at'})
+            if vacancies_elem:
+                vacancies = vacancies_elem.text.strip()
+            else:
+                vacancies = 'Nicht angegeben '
