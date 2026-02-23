@@ -162,9 +162,19 @@ def parse_ausbildung(city: str = 'Freiburg', max_results: int = 20) -> List[Dict
             }
             jobs.append(job)
             # Pop up the progress
-            print(f'✅ {len(jobs)}. {title[:60]}{'...' if len(title) > 60 else ''}-{company}')
+            print(
+                f'✅ {len(jobs)}. {title[:60]}{'...' if len(title) > 60 else ''}-{company}')
             # Limiting the number of results
             if len(jobs) >= max_results:
                 print(f'⚠️ Reached the limit of {max_results} job openings')
                 break
             """ What for?: Don't parse more job listings than necessary -> saves time."""
+        #Handling parcer errors(In the context of the parser: If one job listing is broken -> skip it, continue with the others)
+            """AttributeError occurs when elemnt is not found | Attempt to access an attribute"""
+        except AttributeError as e :
+            print(f"⚠️ Error parsing job listing (element missing):{e}")    
+            continue
+            """Exception catch all others errors(types of errors) """
+        except Exception as e:
+            print(f"⚠️ Unexpected error while parsing job opennings: {e}")
+            continue 
