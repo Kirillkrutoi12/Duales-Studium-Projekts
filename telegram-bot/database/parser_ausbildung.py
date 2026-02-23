@@ -182,3 +182,21 @@ def parse_ausbildung(city: str = 'Freiburg', max_results: int = 20) -> List[Dict
         #Final pop up
         print(f"\n✅ Total found: {len(jobs)} job opennings")    
         return jobs
+        #HTTP Exception Handling(From specific to general)
+    except requests.exceptions.Timeout:
+        print(f"❌ Timeout: the server did not respond within 15 seconds")
+        return []
+    except requests.exceptions.ConnectionError:
+        print(f"❌ Connection error: failed to connect to {base_url}")
+        print("Please check your internet conection")
+        return []
+        """RequestException -> Any other requests error"""
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Error during HTTP request: {e}")
+        return []
+    except Exception as e:
+        print(f"❌ Unexpected error {e}")
+        import traceback
+        print(f"\n 📋 Complete traceback:")
+        traceback.print_exc()#Displays the full error stack
+        return []
