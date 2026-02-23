@@ -178,3 +178,7 @@ def parse_ausbildung(city: str = 'Freiburg', max_results: int = 20) -> List[Dict
         except Exception as e:
             print(f"⚠️ Unexpected error while parsing job opennings: {e}")
             continue 
+
+        #Final pop up
+        print(f"\n✅ Total found: {len(jobs)} job opennings")    
+        return jobs
