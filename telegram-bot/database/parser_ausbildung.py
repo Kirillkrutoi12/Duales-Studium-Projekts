@@ -5,7 +5,7 @@ from typing import List, Dict
 import urllib.parse
 
 
-def parse_ausbildung(city: str = 'Freiburg', max_results: int = 20) -> List[Dict]:
+def parse_ausbildung_de(city: str = 'Freiburg', max_results: int = 20) -> List[Dict]:
     """
       Parses job listings from Ausbildung.de
 
@@ -169,20 +169,20 @@ def parse_ausbildung(city: str = 'Freiburg', max_results: int = 20) -> List[Dict
                 print(f'⚠️ Reached the limit of {max_results} job openings')
                 break
             """ What for?: Don't parse more job listings than necessary -> saves time."""
-        #Handling parcer errors(In the context of the parser: If one job listing is broken -> skip it, continue with the others)
+        # Handling parcer errors(In the context of the parser: If one job listing is broken -> skip it, continue with the others)
             """AttributeError occurs when elemnt is not found | Attempt to access an attribute"""
-        except AttributeError as e :
-            print(f"⚠️ Error parsing job listing (element missing):{e}")    
+        except AttributeError as e:
+            print(f"⚠️ Error parsing job listing (element missing):{e}")
             continue
             """Exception catch all others errors(types of errors) """
         except Exception as e:
             print(f"⚠️ Unexpected error while parsing job opennings: {e}")
-            continue 
+            continue
 
-        #Final pop up
-        print(f"\n✅ Total found: {len(jobs)} job opennings")    
+        # Final pop up
+        print(f"\n✅ Total found: {len(jobs)} job opennings")
         return jobs
-        #HTTP Exception Handling(From specific to general)
+        # HTTP Exception Handling(From specific to general)
     except requests.exceptions.Timeout:
         print(f"❌ Timeout: the server did not respond within 15 seconds")
         return []
@@ -198,5 +198,30 @@ def parse_ausbildung(city: str = 'Freiburg', max_results: int = 20) -> List[Dict
         print(f"❌ Unexpected error {e}")
         import traceback
         print(f"\n 📋 Complete traceback:")
-        traceback.print_exc()#Displays the full error stack
+        traceback.print_exc()  # Displays the full error stack
         return []
+
+
+def parse_multiple_cities(cities: List[str], max_results: int = 10) -> Dict[str, List[Dict]]:
+    """
+        Parses job listings for multiple cities
+        Args:
+        cities (List[str]): List of cities
+        max_results (int): Maximum number of job listings for each city
+        Returns:
+        Dict[str, List[Dict]]: Dictionary {city: list_of_jobs}
+    """
+    all_jobs = {}
+
+    for i, city in enumerate(cities,1):
+        print(f"\n{'='*70}")
+        print(f"📍 Parcing city {i}/{len(cities)}: {city}")
+        print('='*70)#A beautiful separator line.
+
+        jobs = parse_ausbildung_de(city, max_results)
+        all_jobs[city] = jobs
+        # Pause between requests (important for following site rules)
+        if i < len(cities):#Don't make a pause after the last city (<)
+            pause_seconds = 3
+            print(f"⏳ Pause {pause_seconds} seconds before the next request...")
+            time.sleep(pause_seconds)#pauses the program's execution for a specific time 
