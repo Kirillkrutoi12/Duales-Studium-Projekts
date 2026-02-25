@@ -102,7 +102,7 @@ def parse_ausbildung_de(city: str = 'Freiburg', max_results: int = 20) -> List[D
                 # If there are no title - skip job opening
                 if not title_elem:
                     continue
-                
+
                 title = title_elem.text.strip()
                 """
                     title_elem -> object BeautifulSoup
@@ -227,7 +227,7 @@ def parse_multiple_cities(cities: List[str], max_results: int = 10) -> Dict[str,
                 f"⏳ Pause {pause_seconds} seconds before the next request...")
             # pauses the program's execution for a specific time
             time.sleep(pause_seconds)
-
+    return all_jobs
 
 def save_to_file(jobs: List[Dict], filename: str = 'jobs.txt'):
     """
