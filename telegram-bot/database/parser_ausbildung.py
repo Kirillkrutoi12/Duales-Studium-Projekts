@@ -120,7 +120,7 @@ def parse_ausbildung_de(city: str = 'Freiburg', max_results: int = 20) -> List[D
             else:
                 company = 'Keine Angabe'
             # City/Location(optinal field)
-            location_elem = link.find('span', {'data-testid': 'jp-customer'})
+            location_elem = link.find('span', {'data-testid': 'jp-brances'})
             if location_elem:
                 # Extracting text
                 location = location_elem.text.strip()
