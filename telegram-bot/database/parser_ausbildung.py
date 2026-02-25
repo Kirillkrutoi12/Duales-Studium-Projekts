@@ -243,14 +243,14 @@ def save_to_file(jobs: List[Dict], filename: str = 'jobs.txt'):
             f.write("FOUND VACANCIES AUSBILDUNG\n")
             f.write("=" * 80 + "\n\n")
 
-        for i, job in enumerate(jobs, 1):
-            f.write(f"{i}. {job['title']}\n")
-            f.write(f" 🏢 Company: {job['company']}\n")
-            f.write(f" 📍 Location: {job['location']}\n")
-            f.write(f" 📅 Start: {job['start_date']}\n")
-            f.write(f" 👥 Vacancies: {job['vacancies']}\n")
-            f.write(f" 🔗 URL: {job['url']}\n")
-            f.write("\n")
+            for i, job in enumerate(jobs, 1):
+                f.write(f"{i}. {job['title']}\n")
+                f.write(f" 🏢 Company: {job['company']}\n")
+                f.write(f" 📍 Location: {job['location']}\n")
+                f.write(f" 📅 Start: {job['start_date']}\n")
+                f.write(f" 👥 Vacancies: {job['vacancies']}\n")
+                f.write(f" 🔗 URL: {job['url']}\n")
+                f.write("\n")
         print(f'💾 Results saved in file: {filename}')
     except Exception as e:
         print(f"❌ Error while saving a file: {e}")
