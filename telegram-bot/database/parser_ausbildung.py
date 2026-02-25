@@ -135,7 +135,7 @@ def parse_ausbildung_de(city: str = 'Freiburg', max_results: int = 20) -> List[D
                 start_date = 'Nicht angegeben'
             # Number of available seats (optional field)
             vacancies_elem = link.find(
-                'span', {'data-testid': 'jp-starting-at'})
+                'span', {'data-testid': 'jp-vacancies'})
             if vacancies_elem:
                 vacancies = vacancies_elem.text.strip()
             else:
