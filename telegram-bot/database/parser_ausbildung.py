@@ -213,15 +213,44 @@ def parse_multiple_cities(cities: List[str], max_results: int = 10) -> Dict[str,
     """
     all_jobs = {}
 
-    for i, city in enumerate(cities,1):
+    for i, city in enumerate(cities, 1):
         print(f"\n{'='*70}")
         print(f"📍 Parcing city {i}/{len(cities)}: {city}")
-        print('='*70)#A beautiful separator line.
+        print('='*70)  # A beautiful separator line.
 
         jobs = parse_ausbildung_de(city, max_results)
         all_jobs[city] = jobs
         # Pause between requests (important for following site rules)
-        if i < len(cities):#Don't make a pause after the last city (<)
+        if i < len(cities):  # Don't make a pause after the last city (<)
             pause_seconds = 3
-            print(f"⏳ Pause {pause_seconds} seconds before the next request...")
-            time.sleep(pause_seconds)#pauses the program's execution for a specific time 
+            print(
+                f"⏳ Pause {pause_seconds} seconds before the next request...")
+            # pauses the program's execution for a specific time
+            time.sleep(pause_seconds)
+
+
+def save_to_file(jobs: List[Dict], filename: str = 'jobs.txt'):
+    """
+        Saves job listings to a text file
+
+        Args:
+        jobs (List[Dict]): List of job listings(type hint)
+        filename (str): Name of the file to save to
+    """
+    try:
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write("=" * 80 + "\n")
+            f.write("FOUND VACANCIES AUSBILDUNG\n")
+            f.write("=" * 80 + "\n\n")
+
+        for i, job in enumerate(jobs, 1):
+            f.write(f"{i}. {job['title']}\n")
+            f.write(f" 🏢 Company: {job['company']}\n")
+            f.write(f" 📍 Location: {job['location']}\n")
+            f.write(f" 📅 Start: {job['start_date']}\n")
+            f.write(f" 👥 Vacancies: {job['vacancies']}\n")
+            f.write(f" 🔗 URL: {job['url']}\n")
+            f.write("\n")
+        print(f'💾 Results saved in file: {filename}')
+    except Exception as e:
+        print(f"❌ Error while saving a file: {e}")
