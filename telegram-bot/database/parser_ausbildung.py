@@ -254,3 +254,40 @@ def save_to_file(jobs: List[Dict], filename: str = 'jobs.txt'):
         print(f'💾 Results saved in file: {filename}')
     except Exception as e:
         print(f"❌ Error while saving a file: {e}")
+
+
+def test_parser():
+    """Test the parser with different scenarios"""
+    print('=' * 70)
+    print('🚀 TEST PARSER AUSBILDUNG.DE')
+    print('=' * 70)
+
+    # Test with city Freiburg
+    jobs = parse_ausbildung_de('Freiburg', max_results=5)
+
+    if jobs:
+        print('\n' + "=" * 70)
+        print("📋 RESULTS:")
+        print("=" * 70)
+
+    for i, job in enumerate(jobs, 1):
+        print(f"\n{i}. {job['title']}")
+        print(f"   🏢 Company: {job['company']}")
+        print(f"   📍 Location: {job['location']}")
+        print(f"   📅 Start: {job['start_date']}")
+        print(f"   👥 Vacancies: {job['vacancies']}")
+        print(f"   🔗 URL: {job['url']}")
+
+        save_to_file(jobs, "test_results_freiburg.txt")
+    else:
+        print("\n  No vacancies found!")
+        print("\n  RECOMMENDATIONS:")
+        print("1. Check debug_Freiburg.html file in browser")
+        print("2. Open https://www.ausbildung.de and search manually")
+        print("3. Copy the URL from address bar")
+        print("4. Update search_url variable in parse_ausbildung_de()")
+
+
+# Entry point
+if __name__ == '__main__':
+    test_parser()
