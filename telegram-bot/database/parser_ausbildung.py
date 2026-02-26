@@ -120,7 +120,8 @@ def parse_ausbildung_de(city: str = 'Freiburg', max_results: int = 20) -> List[D
                 else:
                     company = 'Keine Angabe'
                 # City/Location(optinal field)
-                location_elem = link.find('span', {'data-testid': 'jp-brances'})
+                location_elem = link.find(
+                    'span', {'data-testid': 'jp-brances'})
                 if location_elem:
                     # Extracting text
                     location = location_elem.text.strip()
@@ -166,7 +167,8 @@ def parse_ausbildung_de(city: str = 'Freiburg', max_results: int = 20) -> List[D
                     f'✅ {len(jobs)}. {title[:60]}{'...' if len(title) > 60 else ''}-{company}')
                 # Limiting the number of results
                 if len(jobs) >= max_results:
-                    print(f'⚠️ Reached the limit of {max_results} job openings')
+                    print(
+                        f'⚠️ Reached the limit of {max_results} job openings')
                     break
                 """ What for?: Don't parse more job listings than necessary -> saves time."""
             # Handling parcer errors(In the context of the parser: If one job listing is broken -> skip it, continue with the others)
@@ -228,6 +230,7 @@ def parse_multiple_cities(cities: List[str], max_results: int = 10) -> Dict[str,
             # pauses the program's execution for a specific time
             time.sleep(pause_seconds)
     return all_jobs
+
 
 def save_to_file(jobs: List[Dict], filename: str = 'jobs.txt'):
     """
