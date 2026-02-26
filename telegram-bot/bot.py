@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler
-from data import AUSBILDUNG_DATA, DUALES_STUDIUM_DATA
+from data import get_jobs_for_city
 
 load_dotenv()  # downloads variables from .env
 TOKEN = os.getenv('TOKEN')  # Getting a Token
@@ -59,12 +59,13 @@ async def handle_city_choice(update: Update, context):
     city = city.capitalize()  # "stuttgart" → "Stuttgart"
     """Getting a type of programm from data"""
     program_type = context.user_data.get('program_type', 'program_ausbildung')
-    """Choosing the right database"""
-    if program_type == 'program_ausbildung':
-        data = AUSBILDUNG_DATA.get(city, [])
-    else:
-        data = DUALES_STUDIUM_DATA.get(city, [])
-    # Forming a response
+    
+    #Show loading indicator
+    await query.edit_message_text(f"🔍 Suche nach Stellen in {city}... Bitte warten.")
+    
+    #Using a parser!
+    data = get_jobs_for_city(city, use_cache=True)
+    
     keyboard = [[
         InlineKeyboardButton('🔙 Zurück', callback_data='back_to_cities')
     ]]
