@@ -1,8 +1,11 @@
-import requests
-from bs4 import BeautifulSoup
-import time
-from typing import List, Dict
 import urllib.parse
+from typing import List, Dict
+import time
+from bs4 import BeautifulSoup
+import requests
+import sys
+# force UTF-8 encoding in the code(for emojis)
+sys.stdout.reconfigure(encoding='utf-8')
 
 
 def parse_ausbildung_de(city: str = 'Freiburg', max_results: int = 20) -> List[Dict]:
@@ -18,7 +21,7 @@ def parse_ausbildung_de(city: str = 'Freiburg', max_results: int = 20) -> List[D
     """
     # URL for searching
     base_url = "https://www.ausbildung.de"
-    search_url = f"{base_url}/suche?q={urllib.parse.quote(city)}"
+    search_url = f"{base_url}/suche/?search=%7C{urllib.parse.quote(city)}"
     # Headers ,to like like a browser
     headers = {
         # User-Agent - "identifies as" by the Chrome browser on Windows

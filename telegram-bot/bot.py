@@ -12,6 +12,14 @@ TOKEN = os.getenv('TOKEN')  # Getting a Token
 # All Handlers have to be async
 
 
+async def safe_answer(query):
+    """Safely answer callback query (ignore if expired)"""
+    try:
+        await query.answer()
+    except Exception as e:
+        print(f'⚠️ Could not answer query: {e}')
+
+
 async def start(update: Update, context):
     """Command /start - greet"""
     # Answer on the message
@@ -34,7 +42,8 @@ async def handle_program_choice(update: Update, context):
     """"Processing program type selection(Обрабатываем выбор типа программы)"""
     query = update.callback_query
     # Removing wait-indicator(we can add pop-up notification)
-    await query.answer()
+    # await query.answer()Change below
+    await safe_answer(query)
     """Getting what a user pressed on"""
     choice = query.data
     """Saving user selection"""
@@ -53,19 +62,20 @@ async def handle_program_choice(update: Update, context):
 async def handle_city_choice(update: Update, context):
     """Showing jobopenings in the selected city"""
     query = update.callback_query  # an object with information about the pressed button
-    await query.answer()
+    # await query.answer()
+    await safe_answer(query)
     # Getting the city
     city = query.data.replace('city_', '')  # "city_stuttgart" → "stuttgart"
     city = city.capitalize()  # "stuttgart" → "Stuttgart"
     """Getting a type of programm from data"""
     program_type = context.user_data.get('program_type', 'program_ausbildung')
-    
-    #Show loading indicator
+
+    # Show loading indicator
     await query.edit_message_text(f"🔍 Suche nach Stellen in {city}... Bitte warten.")
-    
-    #Using a parser!
+
+    # Using a parser!
     data = get_jobs_for_city(city, use_cache=True)
-    
+
     keyboard = [[
         InlineKeyboardButton('🔙 Zurück', callback_data='back_to_cities')
     ]]
@@ -83,9 +93,11 @@ async def handle_city_choice(update: Update, context):
 
     await query.edit_message_text(message, reply_markup=reply_markup)
 
+
 async def handle_back(update: Update, context):
     query = update.callback_query
-    await query.answer()
+    # await query.answer()
+    await safe_answer(query)
     # Determing where to return
     if query.data == 'back_to_programs':
         keyboard = [
