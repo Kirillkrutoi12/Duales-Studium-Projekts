@@ -1,0 +1,1 @@
+Dieses Projekt ist ein Python-Telegram-Bot, der freie Ausbildungs- und duale Studienplätze in deutschen Städten anzeigt. Nutzer wählen Programtyp und Stadt, danach zeigt der Bot passende Stellen mit Firma und Bewerbungslink.
